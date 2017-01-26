@@ -15,26 +15,25 @@ class Trie < Hash
 
   def add(word)
     # `node` will describe where we are in the trie.
-    # So, begin with self.
+    # So, begin with the root node: self.
     node = self
 
     word.split("").each_with_index do |letter, index|
 
-      is_last_letter = index == letter.length + 1
+      is_last_letter = index == word.length - 1
       letter_sym = letter.to_sym
 
       # If this letter doesn't exist in the trie, add it
       if node[letter_sym].nil?
 
         # If we've reached the last letter, mark as terminal node
-        if is_last_letter
-          node[letter_sym] = true
-
         # Otherwise, an empty hash, and build upon current node
-        else
-          node[letter_sym] = {}
-          node = node[letter_sym]
-        end
+        node[letter_sym] = is_last_letter ? true : {}
+        node = node[letter_sym]
+
+      # If the letter does exist, just traverse to the next node
+      else
+        node = node[letter_sym]
       end
     end
   end
