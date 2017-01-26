@@ -21,9 +21,6 @@ class Trie < Hash
 
       # If we've reached the last letter, mark as terminal node and return.
       return node[letter][:valid] = true if is_last
-
-      # Return the next node to traverse to.
-      node[letter]
     end
   end
 
@@ -31,8 +28,6 @@ class Trie < Hash
     each_node(word) do |node, letter, is_last|
       return false if node[letter].nil?
       return true if is_last && node[letter][:valid]
-      # Yield next node
-      node[letter]
     end
 
     false
@@ -50,9 +45,6 @@ class Trie < Hash
 
         return false unless further_nodes > 0
       end
-
-      # Yield next node
-      node[letter]
     end
 
     true
@@ -62,7 +54,6 @@ class Trie < Hash
 
   # Iterates through each letter of a word.
   # Yields the current node of the trie, the letter (as symbol), and true or false whether this is the last letter.
-  # The return value of the passed block determines the next node.
   def each_node(word, &block)
     # `node` will describe where we are in the trie.
     # So, begin with the root node: self.
@@ -71,7 +62,10 @@ class Trie < Hash
     word.split("").each_with_index do |letter, index|
       is_last_letter = index == word.length - 1
 
-      node = block.call node, letter.to_sym, is_last_letter
+      yield node, letter.to_sym, is_last_letter
+
+      # Traverse to next node.
+      node = node[letter.to_sym]
     end
   end
 end
