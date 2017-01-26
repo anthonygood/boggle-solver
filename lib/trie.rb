@@ -27,8 +27,41 @@ class Trie < Hash
     end
   end
 
+  def is_word?(word)
+    each_node(word) do |node, letter, is_last|
+      return false if node[letter].nil?
+      return true if is_last && node[letter][:valid]
+      # Yield next node
+      node[letter]
+    end
+
+    false
+  end
+
+  def is_prefix?(prefix)
+    each_node(prefix) do |node, letter, is_last|
+      return false if node[letter].nil?
+
+      # At the last letter, see if the node has any keys apart from :valid,
+      # which indicates a terminal node of a word.
+      if is_last
+        keys = node[letter].keys
+        further_nodes = (keys - [:valid]).length
+
+        return false unless further_nodes > 0
+      end
+
+      # Yield next node
+      node[letter]
+    end
+
+    true
+  end
+
+  private
+
   # Iterates through each letter of a word.
-  # Yields the current node, the letter (as symbol), and true or false whether this is the last letter.
+  # Yields the current node of the trie, the letter (as symbol), and true or false whether this is the last letter.
   # The return value of the passed block determines the next node.
   def each_node(word, &block)
     # `node` will describe where we are in the trie.
@@ -39,48 +72,6 @@ class Trie < Hash
       is_last_letter = index == word.length - 1
 
       node = block.call node, letter.to_sym, is_last_letter
-    end
-  end
-
-  def is_word?(word)
-    node = self
-
-    each_letter(word) do |letter, is_last|
-      return false if node[letter.to_sym].nil?
-
-      if is_last
-        return false unless node[letter.to_sym][:valid]
-      end
-
-      node = node[letter.to_sym]
-    end
-
-    true
-  end
-
-  def is_prefix?(prefix)
-    node = self
-
-    each_letter(prefix) do |letter, is_last|
-      return false if node[letter.to_sym].nil?
-
-      if is_last
-        # See if this node has any keys apart from :valid,
-        # which indicates terminal node of word.
-        keys = node[letter.to_sym].keys
-        return false unless (keys - [:valid]).length > 0
-      end
-
-      node = node[letter.to_sym]
-    end
-
-    true
-  end
-
-  def each_letter(word, &block)
-    word.split("").each_with_index do |letter, index|
-      is_last_letter = index == word.length - 1
-      yield letter, is_last_letter
     end
   end
 end
