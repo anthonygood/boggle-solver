@@ -12,10 +12,6 @@ class Trie < Hash
     super nil # ignore hash options
   end
 
-  def debug
-    @debug = true
-  end
-
   def add(word)
     # `node` will describe where we are in the trie.
     # So, begin with the root node: self.
@@ -25,18 +21,58 @@ class Trie < Hash
 
       is_last_letter = index == word.length - 1
 
-      binding.pry if @debug
-
-      # If this letter doesn't exist in the trie, add it
+      # If this letter doesn't exist in the trie, add it.
       if node[letter.to_sym].nil?
 
         # If we've reached the last letter, mark as terminal node
-        # Otherwise, an empty hash, and build upon current node
+        # Otherwise, an empty hash, and build upon current node.
         node[letter.to_sym] = is_last_letter ? {valid: true} : {}
       end
 
-      # Traverse to the next node
+      # Traverse to the next node.
       node = node[letter.to_sym]
+    end
+  end
+
+  def is_word?(word)
+    node = self
+
+    each_letter(word) do |letter, is_last|
+      return false if node[letter.to_sym].nil?
+
+      if is_last
+        return false unless node[letter.to_sym][:valid]
+      end
+
+      node = node[letter.to_sym]
+    end
+
+    true
+  end
+
+  def is_prefix?(prefix)
+    node = self
+
+    each_letter(prefix) do |letter, is_last|
+      return false if node[letter.to_sym].nil?
+
+      if is_last
+        # See if this node has any keys apart from :valid,
+        # which indicates terminal node of word.
+        keys = node[letter.to_sym].keys
+        return false unless (keys - [:valid]).length > 0
+      end
+
+      node = node[letter.to_sym]
+    end
+
+    true
+  end
+
+  def each_letter(word, &block)
+    word.split("").each_with_index do |letter, index|
+      is_last_letter = index == word.length - 1
+      yield letter, is_last_letter
     end
   end
 end

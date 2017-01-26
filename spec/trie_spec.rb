@@ -8,7 +8,7 @@ describe Trie do
     expect(trie).to eql c: {a: {t: {valid: true}}}
   end
 
-  xit "can have multiple words" do
+  it "can have multiple words" do
     trie.add("man")
     trie.add("wo")
 
@@ -44,8 +44,17 @@ describe Trie do
     })
   end
 
-  xit "can be queried" do
-    trie.add("cat")
-    expect(trie.is_word?("cat"))
+  describe "querying" do
+    before { trie.add("cat") }
+
+    it "can be queried for words" do
+      expect(trie.is_word?("cat")).to be true
+      expect(trie.is_word?("ca")).to be false
+    end
+
+    it "can be queried for prefixes" do
+      expect(trie.is_prefix?("cat")).to be false
+      expect(trie.is_prefix?("ca")).to be true
+    end
   end
 end
