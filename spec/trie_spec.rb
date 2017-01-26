@@ -5,16 +5,16 @@ describe Trie do
 
   it "can add words" do
     trie.add("cat")
-    expect(trie).to eql c: {a: {t: true}}
+    expect(trie).to eql c: {a: {t: {valid: true}}}
   end
 
-  it "can have multiple words" do
+  xit "can have multiple words" do
     trie.add("man")
     trie.add("wo")
 
     expect(trie).to eql({
-      m: {a: {n: true}},
-      w: {o: true}
+      m: {a: {n: {valid: true}}},
+      w: {o: {valid: true}}
     })
   end
 
@@ -24,9 +24,28 @@ describe Trie do
 
     expect(trie).to eql({
       c: {a: {
-        t: true,
-        r: true
+        t: {valid: true},
+        r: {valid: true}
       }}
     })
+  end
+
+  it "can have words of different lengths with the same root" do
+    trie.add("ab")
+    # trie.debug
+    trie.add("abs")
+
+    expect(trie).to eql({
+      a: {b: {
+        valid: true,
+        s: {valid: true}
+        }
+      }
+    })
+  end
+
+  xit "can be queried" do
+    trie.add("cat")
+    expect(trie.is_word?("cat"))
   end
 end

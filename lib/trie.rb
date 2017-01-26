@@ -5,12 +5,15 @@
 #                     where 'true' marks a terminal node.
 # A trie is a good solution for finding words and word roots quickly.
 # Whereas an array will have quicker writes, a trie will have quicker reads.
-
 require "pry-byebug"
 
 class Trie < Hash
   def initialize(options={})
     super nil # ignore hash options
+  end
+
+  def debug
+    @debug = true
   end
 
   def add(word)
@@ -21,20 +24,19 @@ class Trie < Hash
     word.split("").each_with_index do |letter, index|
 
       is_last_letter = index == word.length - 1
-      letter_sym = letter.to_sym
+
+      binding.pry if @debug
 
       # If this letter doesn't exist in the trie, add it
-      if node[letter_sym].nil?
+      if node[letter.to_sym].nil?
 
         # If we've reached the last letter, mark as terminal node
         # Otherwise, an empty hash, and build upon current node
-        node[letter_sym] = is_last_letter ? true : {}
-        node = node[letter_sym]
-
-      # If the letter does exist, just traverse to the next node
-      else
-        node = node[letter_sym]
+        node[letter.to_sym] = is_last_letter ? {valid: true} : {}
       end
+
+      # Traverse to the next node
+      node = node[letter.to_sym]
     end
   end
 end
