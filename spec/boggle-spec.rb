@@ -5,6 +5,11 @@ describe Boggle do
   let(:bigger_grid) { "THACKREAS"}
   let(:boggle) { described_class.new(simple_grid) }
 
+  before :all do
+    # Cache solution across multiple examples to prevent reloading trie
+    @solution = Boggle.solve("CABT")
+  end
+
   context "with invalid (non-square) number of letters" do
     it "raises ArgumentError" do
       expect { Boggle.new("ABC") }.to raise_error(ArgumentError)
@@ -12,14 +17,12 @@ describe Boggle do
   end
 
   describe "solving" do
-    let(:solution) { Boggle.solve(simple_grid) }
-
     it "solves a simple grid" do
-      expect(solution.to_s).to eql ["cab", "cat", "act", "ab", "at", "ba", "bat", "ta", "tab"]
+      expect(@solution.to_s).to eql ["cab", "cat", "act", "ab", "at", "ba", "bat", "ta", "tab"]
     end
 
     it "returns a queryable word store" do
-      expect(solution[0]).to be_a Word
+      expect(@solution[0]).to be_a Word
     end
   end
 

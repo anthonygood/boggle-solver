@@ -1,22 +1,26 @@
 require_relative "words"
 require_relative "word_store"
+require_relative "trie"
 
 class Boggle
   attr_accessor :letters, :grid, :sqrt, :found_words
 
   def self.solve(letters)
-    bg = new(letters)
+    bg = new letters, load: true
     bg.solve_grid
     bg.found_words
   end
 
-  def initialize(letters)
+  # Pass load: true to load trie from dictionary upon instantiation
+  def initialize(letters, load:false)
     validate(letters)
 
         @letters = letters.downcase
            @sqrt = Math.sqrt(@letters.length).to_i
            @grid = letters_to_grid
     @found_words = WordStore.new
+
+       load_trie if load
   end
 
   def solve_grid
@@ -35,7 +39,8 @@ class Boggle
     end
 
     # check if current word is a valid word root
-    if words_containing(new_word).any?
+    # if words_containing(new_word).any?
+    if is_prefix?(new_word)
       each_adjacent_letter(row_index, letter_index) do |letter, i, j|
         if new_indices.include? [i, j]
           print "."
@@ -55,6 +60,7 @@ class Boggle
 
       (j-1..j+1).each do |letter_i|
         # skip if no letter exist in row
+
         next if letter_i < 0 || letter_i > row.size
         # skip if this is the selfsame letter
         next if i == row_i && j == letter_i
@@ -78,6 +84,16 @@ class Boggle
 
   private
 
+  def load_trie
+    @trie = Trie.new
+
+    puts "Loading trie from dictionary..."
+    WORDS.each {|word| @trie.add word }
+    print "Done!\n"
+
+    @trie
+  end
+
   def validate(lttrs)
     # Invalid unless square number of letters.
     unless Math.sqrt(lttrs.length).to_i == Math.sqrt(lttrs.length)
@@ -90,10 +106,18 @@ class Boggle
   end
 
   def is_word?(word)
-    WORDS.include? word
+    if @trie
+      @trie.is_word? word
+    else
+      WORDS.include? word
+    end
   end
 
-  def words_containing(word)
-    WORDS.select {|w| w.match(/^#{word}/) }
+  def is_prefix?(word)
+    if @trie
+      @trie.is_prefix? word
+    else
+      WORDS.select {|w| w.match(/^#{word}/) }.any?
+    end
   end
 end
