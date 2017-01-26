@@ -87,7 +87,7 @@ class Boggle
   def load_trie
     @trie = Trie.new
 
-    puts "Loading trie from dictionary..."
+    print "\nLoading trie from dictionary..."
     WORDS.each {|word| @trie.add word }
     print "Done!\n"
 
