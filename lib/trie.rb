@@ -5,8 +5,8 @@
 #                     where {valid: true} marks a terminal node.
 # A trie is a good solution for finding words and word roots quickly.
 # Whereas an array will have quicker writes, a trie will have quicker reads.
-require "pry-byebug"
-
+#
+#
 class Trie < Hash
   def initialize(*args)
     super nil # ignore hash options
@@ -14,27 +14,31 @@ class Trie < Hash
   end
 
   def add(word)
+    each_node(word) do |node, letter, is_last|
+
+      # If the letter doesn't occur in the current node, add it.
+      node[letter] = {} if node[letter].nil?
+
+      # If we've reached the last letter, mark as terminal node and return.
+      return node[letter][:valid] = true if is_last
+
+      # Return the next node to traverse to.
+      node[letter]
+    end
+  end
+
+  # Iterates through each letter of a word.
+  # Yields the current node, the letter (as symbol), and true or false whether this is the last letter.
+  # The return value of the passed block determines the next node.
+  def each_node(word, &block)
     # `node` will describe where we are in the trie.
     # So, begin with the root node: self.
     node = self
 
     word.split("").each_with_index do |letter, index|
-
       is_last_letter = index == word.length - 1
 
-      # If this letter doesn't exist in the trie, add it.
-      if node[letter.to_sym].nil?
-
-        # If we've reached the last letter, mark as terminal node
-        # Otherwise, an empty hash, and build upon current node.
-        node[letter.to_sym] = is_last_letter ? {valid: true} : {}
-      end
-
-      # If we've reached the last letter, mark as terminal node
-      node[letter.to_sym][:valid] = true if is_last_letter
-
-      # Traverse to the next node.
-      node = node[letter.to_sym]
+      node = block.call node, letter.to_sym, is_last_letter
     end
   end
 
