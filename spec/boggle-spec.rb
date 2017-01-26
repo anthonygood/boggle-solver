@@ -1,4 +1,4 @@
-require_relative "boggle"
+require_relative "../lib/boggle"
 
 describe Boggle do
   let(:simple_grid) { "CABT" }
@@ -11,16 +11,16 @@ describe Boggle do
     end
   end
 
-  it "solves a simple grid", :focus do
-    solution = Boggle.solve(simple_grid)
+  describe "solving" do
+    let(:solution) { Boggle.solve(simple_grid) }
 
-    expect(solution).to eql ["cab", "cat", "act", "ab", "at", "ba", "bat", "ta", "tab"]
-  end
+    it "solves a simple grid" do
+      expect(solution.to_s).to eql ["cab", "cat", "act", "ab", "at", "ba", "bat", "ta", "tab"]
+    end
 
-  it "solves a bigger grid", :focus do
-    solution = Boggle.solve(bigger_grid)
-
-    expect(solution.length).to eql 76
+    it "returns a queryable word store" do
+      expect(solution[0]).to be_a Word
+    end
   end
 
   describe "is_word?" do

@@ -1,6 +1,5 @@
 require_relative "words"
-require_relative "word"
-require "pry-byebug"
+require_relative "word_store"
 
 class Boggle
   attr_accessor :letters, :grid, :sqrt, :found_words
@@ -17,7 +16,7 @@ class Boggle
         @letters = letters.downcase
            @sqrt = Math.sqrt(@letters.length).to_i
            @grid = letters_to_grid
-    @found_words = []
+    @found_words = WordStore.new
   end
 
   def solve_grid
@@ -32,7 +31,7 @@ class Boggle
 
     if is_word?(new_word)
       print "\n#{new_word}\n"
-      found_words.push(new_word)
+      found_words.add new_word, new_indices
     end
 
     # check if current word is a valid word root
