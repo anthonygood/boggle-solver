@@ -1,8 +1,9 @@
 require_relative "../lib/boggle"
 
 describe Boggle do
-  let(:simple_grid) { "CABT" }
-  let(:bigger_grid) { "THACKREAS"}
+  let(:simple_grid)  { "CABT" }
+  let(:bigger_grid)  { "THACKREAS"}
+  let(:biggest_grid) { "VCATSENYTILAAIRT" }
   let(:boggle) { described_class.new(simple_grid) }
 
   before :all do
@@ -23,6 +24,14 @@ describe Boggle do
 
     it "returns a queryable word store" do
       expect(@solution[0]).to be_a Word
+    end
+
+    it "solves a more complex grid" do
+      expect(described_class.solve(bigger_grid).to_s.length).to eq 76
+    end
+
+    it "solves en even more complex grid" do
+      expect(described_class.solve(biggest_grid).to_s.length).to eq 413
     end
   end
 

@@ -5,9 +5,11 @@ require_relative "trie"
 class Boggle
   attr_accessor :letters, :grid, :sqrt, :found_words
 
+  # .solve will load trie by default
   def self.solve(letters)
     bg = new letters, load: true
     bg.solve_grid
+    puts bg.found_words.to_s
     bg.found_words
   end
 
