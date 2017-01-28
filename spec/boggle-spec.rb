@@ -8,7 +8,7 @@ describe Boggle do
 
   before :all do
     # Cache solution across multiple examples to prevent reloading trie
-    @solution = Boggle.solve("CABT")
+    @solution = Boggle.words_in("CABT")
   end
 
   context "with invalid (non-square) number of letters" do
@@ -27,36 +27,11 @@ describe Boggle do
     end
 
     it "solves a more complex grid" do
-      expect(described_class.solve(bigger_grid).to_s.length).to eq 76
+      expect(described_class.words_in(bigger_grid).to_s.length).to eq 76
     end
 
     it "solves en even more complex grid" do
-      expect(described_class.solve(biggest_grid).to_s.length).to eq 413
-    end
-  end
-
-  describe "is_word?" do
-    it "is false for non-word" do
-      expect(boggle.send(:is_word?, "afdgsdfgs")).to be false
-    end
-
-    it "is false for partial word" do
-      expect(boggle.send(:is_word?, "ough")).to be false
-    end
-
-    it "is true for word" do
-      expect(boggle.send(:is_word?, "cat")).to be true
-    end
-  end
-
-  describe "each_adjacent_letter" do
-    it "yields every adjacent letter" do
-      letters = []
-      boggle.each_adjacent_letter(0,0) do |letter|
-        letters.push letter
-      end
-
-      expect(letters).to eql ["a","b","t"]
+      expect(described_class.words_in(biggest_grid).to_s.length).to eq 413
     end
   end
 end

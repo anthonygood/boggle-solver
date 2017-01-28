@@ -4,11 +4,13 @@ require_relative "loaded_trie"
 class Boggle
   attr_accessor :letters, :grid, :sqrt, :found_words
 
-  # .solve will load trie by default
   def self.solve(letters)
-    bg = new letters, load: true
-    bg.solve_grid
-    bg.found_words
+    new(letters).solve_grid
+  end
+
+  # Factory method for directly returning word store object after solving
+  def self.words_in(letters)
+    solve(letters).found_words
   end
 
   # Pass load: true to load trie from dictionary upon instantiation
@@ -24,6 +26,7 @@ class Boggle
 
   def solve_grid
     for_each_letter {|letter, i, j| solve "", i, j }
+    self
   end
 
   def solve(word, row_index, letter_index, indices=[])
@@ -33,7 +36,6 @@ class Boggle
     new_indices = indices + [[row_index, letter_index]]
 
     if is_word?(new_word)
-      puts new_word
       found_words.add new_word, new_indices
     end
 
@@ -44,29 +46,6 @@ class Boggle
         if !new_indices.include? [i, j]
           solve new_word, i, j, new_indices
         end
-      end
-    end
-  end
-
-  def each_adjacent_letter(i, j, &block)
-    (i-1..i+1).each do |row_i|
-      # skip if no row exists
-      next if row_i < 0 || row_i > grid.size - 1
-
-      row = grid[row_i]
-
-      (j-1..j+1).each do |letter_i|
-        # skip if no letter exist in row
-
-        next if letter_i < 0 || letter_i > row.size
-        # skip if this is the selfsame letter
-        next if i == row_i && j == letter_i
-
-        # skip if out of bounds
-        next unless letter = row[letter_i]
-
-        # all is well, yield letter
-        yield letter, row_i, letter_i
       end
     end
   end
@@ -90,6 +69,29 @@ class Boggle
 
   def letters_to_grid
     letters.scan(/.{#{sqrt}}/).map {|str| str.split("") }
+  end
+
+  def each_adjacent_letter(i, j, &block)
+    (i-1..i+1).each do |row_i|
+      # skip if no row exists
+      next if row_i < 0 || row_i > grid.size - 1
+
+      row = grid[row_i]
+
+      (j-1..j+1).each do |letter_i|
+        # skip if no letter exist in row
+
+        next if letter_i < 0 || letter_i > row.size
+        # skip if this is the selfsame letter
+        next if i == row_i && j == letter_i
+
+        # skip if out of bounds
+        next unless letter = row[letter_i]
+
+        # all is well, yield letter
+        yield letter, row_i, letter_i
+      end
+    end
   end
 
   def is_word?(word)
