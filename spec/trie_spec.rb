@@ -68,7 +68,7 @@ describe Trie do
     end
   end
 
-  it "can be built from array of words" do
+  it "can be built from words passed to constructor" do
     trie = Trie.new("cat", "ca")
 
     expect(trie).to eql({
