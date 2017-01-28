@@ -37,4 +37,10 @@ class WordStore
   def [](index)
     @words[index]
   end
+
+  def count
+    @words.count
+  end
+
+  alias :length :count
 end
