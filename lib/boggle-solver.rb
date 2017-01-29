@@ -1,6 +1,7 @@
 require "boggle-solver/version"
 require "boggle-solver/word_store"
 require "boggle-solver/loaded_trie"
+require "boggle-solver/letter_picker"
 
 module Boggle
   class Solver
