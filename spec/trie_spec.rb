@@ -1,6 +1,6 @@
-require_relative "../lib/trie"
+require "boggle-solver/trie"
 
-describe Trie do
+describe Boggle::Trie do
   let(:trie) { described_class.new }
 
   it "can add words" do
@@ -42,7 +42,7 @@ describe Trie do
       }
     })
 
-    other_trie = Trie.new
+    other_trie = described_class.new
     other_trie.add "cat"
     other_trie.add "ca"
 
@@ -69,7 +69,7 @@ describe Trie do
   end
 
   it "can be built from words passed to constructor" do
-    trie = Trie.new("cat", "ca")
+    trie = described_class.new("cat", "ca")
 
     expect(trie).to eql({
       c: {a: {
