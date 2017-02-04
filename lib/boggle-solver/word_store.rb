@@ -15,6 +15,10 @@ module Boggle
     def to_s
       @word
     end
+
+    def to_h
+      { word: word, indices: indices }
+    end
   end
 
   # WordStore allows simple access to an underlying array of Word objects.
@@ -31,9 +35,15 @@ module Boggle
     end
 
     # Return an array of plain strings rather than Word objects
-    def to_s
+    def to_strings
       @words.map &:to_s
     end
+
+    def to_a
+      @words.map &:to_h
+    end
+
+    alias :to_hashes :to_a
 
     def [](index)
       @words[index]

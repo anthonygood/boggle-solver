@@ -1,4 +1,5 @@
 require "boggle-solver"
+require "pry-byebug"
 
 describe Boggle::Solver do
   let(:simple_grid)  { "CABT" }
@@ -19,7 +20,7 @@ describe Boggle::Solver do
 
   describe "solving" do
     it "solves a simple grid" do
-      expect(@solution.to_s).to eql ["cab", "cat", "act", "ab", "at", "ba", "bat", "ta", "tab"]
+      expect(@solution.to_strings).to eql ["cab", "cat", "act", "ab", "at", "ba", "bat", "ta", "tab"]
     end
 
     it "returns a queryable word store" do
@@ -27,11 +28,11 @@ describe Boggle::Solver do
     end
 
     it "solves a more complex grid" do
-      expect(described_class.find_words!(bigger_grid).to_s.length).to eq 76
+      expect(described_class.find_words!(bigger_grid).to_strings.length).to eq 76
     end
 
     it "solves en even more complex grid" do
-      expect(described_class.find_words!(biggest_grid).to_s.length).to eq 413
+      expect(described_class.find_words!(biggest_grid).to_strings.length).to eq 413
     end
   end
 end
