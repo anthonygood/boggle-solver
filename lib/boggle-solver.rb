@@ -7,17 +7,17 @@ module Boggle
   class Solver
     attr_accessor :letters, :grid, :sqrt, :found_words
 
-    def self.solve(letters)
-      new(letters).solve_grid
+    def self.solve!(letters)
+      new(letters).solve_grid!
     end
 
     # Factory method for directly returning word store object after solving
-    def self.words_in(letters)
-      solve(letters).found_words
+    def self.find_words!(letters)
+      solve!(letters).found_words
     end
 
     # Pass load: true to load trie from dictionary upon instantiation
-    def initialize(letters, load:false)
+    def initialize(letters)
       validate(letters)
 
           @letters = letters.downcase
@@ -27,12 +27,14 @@ module Boggle
              @trie = Boggle::LoadedTrie
     end
 
-    def solve_grid
-      for_each_letter {|letter, i, j| solve "", i, j }
+    # Calls solve! on every tile
+    def solve_grid!
+      for_each_letter {|letter, i, j| solve! "", i, j }
       self
     end
 
-    def solve(word, row_index, letter_index, indices=[])
+    # Solves the grid from one tile
+    def solve!(word, row_index, letter_index, indices=[])
       letter      = grid[row_index][letter_index]
 
       new_word    = word + letter
@@ -47,7 +49,7 @@ module Boggle
       if is_prefix?(new_word)
         each_adjacent_letter(row_index, letter_index) do |letter, i, j|
           if !new_indices.include? [i, j]
-            solve new_word, i, j, new_indices
+            solve! new_word, i, j, new_indices
           end
         end
       end

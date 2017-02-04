@@ -8,7 +8,7 @@ describe Boggle::Solver do
 
   before :all do
     # Cache solution across multiple examples to prevent reloading trie
-    @solution = described_class.words_in("CABT")
+    @solution = described_class.find_words!("CABT")
   end
 
   context "with invalid (non-square) number of letters" do
@@ -27,11 +27,11 @@ describe Boggle::Solver do
     end
 
     it "solves a more complex grid" do
-      expect(described_class.words_in(bigger_grid).to_s.length).to eq 76
+      expect(described_class.find_words!(bigger_grid).to_s.length).to eq 76
     end
 
     it "solves en even more complex grid" do
-      expect(described_class.words_in(biggest_grid).to_s.length).to eq 413
+      expect(described_class.find_words!(biggest_grid).to_s.length).to eq 413
     end
   end
 end
