@@ -36,6 +36,7 @@ module Boggle
     # Solves the grid from one tile
     def solve!(word, row_index, letter_index, indices=[])
       letter      = grid[row_index][letter_index]
+      letter      = letter == "q" ? "qu" : letter
 
       new_word    = word + letter
       new_indices = indices + [[row_index, letter_index]]

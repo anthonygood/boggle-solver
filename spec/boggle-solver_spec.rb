@@ -34,5 +34,13 @@ describe Boggle::Solver do
     it "solves en even more complex grid" do
       expect(described_class.find_words!(biggest_grid).to_strings.length).to eq 413
     end
+
+    context "with the letter q" do
+      let(:q_grid) { "qick" }
+
+      it "expands q to qu" do
+        expect(described_class.find_words!(q_grid).to_strings).to include "quick"
+      end
+    end
   end
 end
